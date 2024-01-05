@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 
 from scipy import odr
 
@@ -20,8 +19,8 @@ loweringTemperatureResistance = np.array([10.72, 10.45, 9.74, 9.11, 8.60, 8.16, 
 
 def analysis(temperatureData, tU, resistanceData, rU, title):
     plt.clf()
-    plt.scatter(temperatureData, resistanceData)
-    plt.errorbar(temperatureData, resistanceData, tU, rU, linestyle='')
+    plt.scatter(temperatureData, resistanceData, s=5)
+    plt.errorbar(temperatureData, resistanceData, rU, tU, linestyle='')
     plt.title(title+ r"$\text{R}(k\Omega)\text{ vs }T(K)$")
     plt.ylabel(r"$\text{Resistance}(k\Omega)$")
     plt.xlabel("Temperature(K)")
@@ -37,7 +36,7 @@ def analysis(temperatureData, tU, resistanceData, rU, title):
     print("B=", B, '+/-', b)
     print("C=", C, '+/-', c)
 
-    yFit = np.linspace(0.5, 20, 1000)
+    yFit = np.linspace(0.6, 20, 1000)
     
     xFit = 1/(A+B*np.log(yFit)+C*(np.log(yFit)**3))
 
@@ -45,7 +44,6 @@ def analysis(temperatureData, tU, resistanceData, rU, title):
     plt.legend(loc="upper right")
 
     plt.savefig(title+'.png', dpi=300)
-    # plt.show()
 
 
 analysis(celciusData, 1, risingTemperatureResistance, 0.001, "Rising Temperature Data- ")
