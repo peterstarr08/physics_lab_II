@@ -19,31 +19,67 @@ loweringTemperatureResistance = np.array([10.72, 10.45, 9.74, 9.11, 8.60, 8.16, 
 
 def analysis(temperatureData, tU, resistanceData, rU, title):
     plt.clf()
+    #R vs T scatter
     plt.scatter(temperatureData, resistanceData, s=5)
+    #R vs T error bars for both resistance and temperature
     plt.errorbar(temperatureData, resistanceData, rU, tU, linestyle='')
+    #formatting the plot
     plt.title(title+ r"$\text{R}(k\Omega)\text{ vs }T(K)$")
     plt.ylabel(r"$\text{Resistance}(k\Omega)$")
     plt.xlabel("Temperature(K)")
     print('\n\n', title)
+
+    #polynomial setup with constant, degree 1 & 3 
     poly_model = odr.polynomial([1,3])
-    dataSet = odr.RealData(np.log(resistanceData), np.reciprocal(temperatureData), rU, tU)
     
+    #calculating error in 1/T & ln(R)
+    errorTemp = []
+    for val in temperatureData: 
+        errorTemp.append(tU/(val*val))
+    errorResistence = []
+    for val in resistanceData:
+        errorResistence.append(rU/(val))
+
+    #setting up data model with uncertainty data
+    dataSet = odr.RealData(np.log(resistanceData), np.reciprocal(temperatureData), errorResistence, errorTemp)
+    #setting up the required data, cubic model and running it
     odrInstantiate = odr.ODR(dataSet, poly_model)
     val = odrInstantiate.run()
+
+    #getting regression parameters with their standard deviation data
     A,B,C = val.beta
     a,b,c = val.sd_beta
     print("A=", A, '+/-', a)
     print("B=", B, '+/-', b)
     print("C=", C, '+/-', c)
 
-    yFit = np.linspace(0.6, 20, 1000)
-    
+    #adding regression curve
+    yFit = np.linspace(0.6, 20, 1000)    
     xFit = 1/(A+B*np.log(yFit)+C*(np.log(yFit)**3))
 
+    #more formatting and saving figure
     plt.plot(xFit, yFit, label="Regression curve")
     plt.legend(loc="upper right")
+    plt.savefig(title+' R vs T.png', dpi=300)
 
-    plt.savefig(title+'.png', dpi=300)
+    plt.clf()
+    #Scatter for 1/T vs ln(R(T))
+    plt.scatter(np.log(resistanceData),np.reciprocal(temperatureData),  s=5)
+    #1/T vs ln(R(T)) error bars
+    plt.errorbar(np.log(resistanceData),np.reciprocal(temperatureData), errorTemp, errorResistence, linestyle='')
+    #Plot formatting
+    plt.title(title+" 1/T vs ln(R)")
+    plt.ylabel("1/T")
+    plt.xlabel("ln(R)")
+
+    #adding regression curve
+    xFit = np.linspace(-0.2, 2.5, 1000)
+    yFit = A+B*(xFit)+C*(xFit**3)
+    plt.plot(xFit, yFit, label="Regression curve")
+
+    #formatting and savinf figure
+    plt.legend(loc="upper right")
+    plt.savefig(title+' 1_T vs ln(R).png', dpi=300)
 
 
 analysis(celciusData, 1, risingTemperatureResistance, 0.001, "Rising Temperature Data- ")
