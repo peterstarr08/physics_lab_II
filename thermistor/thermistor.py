@@ -84,3 +84,4 @@ def analysis(temperatureData, tU, resistanceData, rU, title):
 
 analysis(celciusData, 1, risingTemperatureResistance, 0.001, "Rising Temperature Data- ")
 analysis(celciusData, 1, loweringTemperatureResistance, 0.001, "Cooling Temperature Data- ")
+analysis(celciusData, 1, (loweringTemperatureResistance+risingTemperatureResistance)/2, 0.001, "Cooling Rising Average Temperature Data- ")
