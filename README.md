@@ -1,0 +1,3 @@
+- [X] Thermistor
+- [ ] Photoelectric effect - in progress
+- [ ] Rydberg - first version done
