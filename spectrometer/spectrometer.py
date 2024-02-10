@@ -64,7 +64,7 @@ print(tabulate(wavelengthMatrix, headers=['V1 Left','V2 Left','V1 Right','V2 Rig
 
 print("\nCalculation")
 print(tabulate({
-    "deviation": deviationAngle,
+    "deviation": np.degrees(deviationAngle),
     "lamda":meanWavelengths,
     "s.d. lambda":standardDeviationWavelengths,
     "1/lamda^2": meanInverseSquareWavelengths,
