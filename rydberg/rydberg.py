@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from scipy.stats import tstd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
@@ -19,25 +20,56 @@ vernier_1_tR = np.radians(np.array([12.5+1*LC, 13+21*LC, 14+ 0*LC, 19+6*LC, 29+2
 
 vernier_2_tL = np.radians(180-np.array([167.5+15*LC, 166.5+17*LC, 166+11*LC, 161 + 7*LC, 151+26*LC]))
 vernier_2_tR = np.radians(np.array([192.5 + 1*LC, 193+22*LC, 194 + 0*LC, 199 + 4*LC, 206.5 + 21*LC])-180)
-print("Theta radians", (vernier_1_tL+vernier_2_tL+vernier_1_tR +vernier_2_tR)/4)
+
 rwavelength_v1_l = 1/(GRATING_SPACE*np.sin(vernier_1_tL)/m)
 rwavelength_v1_r = 1/(GRATING_SPACE*np.sin(vernier_1_tR)/m)
 rwavelength_v2_l = 1/(GRATING_SPACE*np.sin(vernier_2_tL)/m)
 rwavelength_v2_r = 1/(GRATING_SPACE*np.sin(vernier_2_tR)/m)
 
+
+#DataFrame
+ObservationDataFrame = pd.DataFrame({
+    'Left Side Vernier 1(degrees)': 360-np.degrees(vernier_1_tL),
+    'Left Side Vernier 2(degrees)': 180-np.degrees(vernier_2_tL),
+    'Right Side Vernier 1(degrees)': np.degrees(vernier_1_tR),
+    'Right Side Vernier 2(degrees)': np.degrees(vernier_2_tR)+180,
+})
+
+print(ObservationDataFrame)
+
+print('Normalized Readings')
+CalculationDataFrame =pd.DataFrame({
+    'Wavelength left v1': np.reciprocal(rwavelength_v1_l),
+    '1/wavelength left v1':rwavelength_v1_l,
+    
+    'Wavelength left v2': np.reciprocal(rwavelength_v2_l),
+    '1/wavelength left v2':rwavelength_v2_l,
+
+    'Wavelength right v1': np.reciprocal(rwavelength_v1_r),
+    '1/wavelength right v1':rwavelength_v1_r,
+
+    'Wavelength right v2': np.reciprocal(rwavelength_v2_r),
+    '1/wavelength right v2':rwavelength_v2_r,
+})
+
 _wavelength = np.full(len(n_i), .0)
+
 
 deviationError = np.full(len(_wavelength), .0)
 for i in range(0, len(_wavelength)):
     _wavelength[i] = (rwavelength_v1_l[i] + rwavelength_v1_r[i] + rwavelength_v2_l[i] + rwavelength_v2_r[i])/4
     deviationError[i] = tstd([rwavelength_v1_l[i] , rwavelength_v1_r[i] , rwavelength_v2_l[i] , rwavelength_v2_r[i]])/2
 
-print("wavelength reciprocal", _wavelength)
-print("deviation error", deviationError)
 
+WavelengthDataFrame = pd.DataFrame({
+    "Mean Reciprocal Wavelength: ": _wavelength,
+    "Standard Error of Reciprocal Wavelength": deviationError
+})
+
+print(CalculationDataFrame)
+print(WavelengthDataFrame)
 stateChange = (1/4 - 1/(np.power(n_i, 2)))
 
-print("stateChange", stateChange)
 
 params, covar = curve_fit(regression, stateChange, _wavelength, sigma=deviationError)
 
