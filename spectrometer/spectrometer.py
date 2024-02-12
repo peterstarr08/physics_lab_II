@@ -84,6 +84,10 @@ yFit = B*xFit + A
 
 plt.scatter(meanInverseSquareWavelengths, refractiveIndex)
 plt.errorbar(meanInverseSquareWavelengths, refractiveIndex, xerr=standardDeviationInverseSquareWavelengths, yerr=uncertaintyRefractiveIndex, linestyle='', capsize=3)
-plt.plot(xFit, yFit)
+plt.plot(xFit, yFit, label='Regression curve')
+plt.title(r"$\mu_{\lambda}\text{ = A + }\frac{B}{\lambda^{2}}\text{ graph}$")
+plt.xlabel(r'$\frac{1}{\lambda^{2}}\text{ in }m^{-2}$')
+plt.ylabel(r'$\mu_{\lambda}$')
+plt.legend(loc="upper right")
 plt.ylim(1.425, 1.6)
 plt.show()

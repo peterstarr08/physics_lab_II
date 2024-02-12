@@ -1,7 +1,7 @@
 import math
 import numpy as np
 from scipy.stats import tstd
-
+from tabulate import tabulate
 
 #gravity
 g = 9.8
@@ -10,7 +10,7 @@ g = 9.8
 d = 5e-3
 
 #distance between the chosen top and bottom lines on the monitor
-L = 1e-3
+L = 1.3e-3
 
 #desnity of the oil
 rho_oil = 928
@@ -65,17 +65,21 @@ min_ne_d = np.min(ne)
 div_ne_d = ne/min_ne_d
 neff_d = np.round(div_ne_d)
 ne_neff_d = ne/neff_d 
-print('\n\nDynamic Data',dynamicDrop)
-print('Mean velcoity', v_f_d)
-print('xi',xi_d)
-print('r', r_d)
-print('r3', r3_d)
-print('T', T_d)
-print('ne', ne)
+print('\n\nDynamic Data\n',dynamicDrop)
 
-print('ne divided by the lowest', div_ne_d)
-print('n_eff', neff_d)
-print('ne/n_eff', ne_neff_d)
+
+print(tabulate({
+    'Mean velcoity': v_f_d,
+    'xi':xi_d,
+    'r': r_d,
+    'r3': r3_d,
+    'T': T_d,
+    'ne': ne,
+    'ne divided by lowest': div_ne_d,
+    'n_eff': neff_d,
+    'ne/n_eff': ne_neff_d
+}, headers='keys'))
+
 print("e=", np.mean(ne_neff_d), 's. error=',tstd(ne_neff_d)/(len(ne_neff_d)**0.5))
 
 #Balancing method
@@ -99,14 +103,17 @@ div_ne_b = ne_b/min_ne_b
 neff_b = np.round(div_ne_b)
 ne_neff_b = ne_b/neff_b
 
-print('\n\nBalance Drop', balanceDrop)
-print('Mean Velocity', v_f_b)
-print('xi',xi_b)
-print('r', r_b)
-print('r3', r3_b)
-print('ne', ne_b)
+print('\n\nBalance Drop\n', balanceDrop)
 
-print('ne divided by the lowest', div_ne_b)
-print('n_eff', neff_b)
-print('ne/n_eff', ne_neff_b)
+print(tabulate({
+    'Mean Velocity': v_f_b,
+    'xi':xi_b,
+    'r': r_b,
+    'r3': r3_b,
+    'ne': ne_b,
+
+    'ne divided by lowest': div_ne_b,
+    'n_eff': neff_b,
+    'ne/n_eff': ne_neff_b
+}, headers='keys'))
 print('e=', np.mean(ne_neff_b), 's. error=', tstd(ne_neff_b)/(len(ne_neff_b)*0.5))
