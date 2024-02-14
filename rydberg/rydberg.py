@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.stats import tstd
+from scipy.stats import tstd, tsem
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from tabulate import tabulate
 
 LC = 1/60
 GRATING_SPACE = 1/15000 * 0.0254

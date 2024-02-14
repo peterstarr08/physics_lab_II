@@ -9,6 +9,7 @@ LC = 1/60
 d = 1/15000 * 0.0254
 
 colorsData = ['Violet', 'Green', 'Yellow','Red']
+colorsWavelength = (np.array([407.8, 546.1, 577, 623]))*1e-9
 
 wavelengthData = np.array([
     [347+28*LC, 167.5+6*LC, 12.5+0*LC, 192.5+6*LC],
@@ -61,7 +62,7 @@ sdB, sdA = Value.sd_beta
 #Tabulating Data
 print("Wavelengths Data:")
 print(tabulate(wavelengthMatrix, headers=['V1 Left','V2 Left','V1 Right','V2 Right'], showindex=colorsData))
-
+print('Angle of prism', math.degrees(angleOfPrism), ' deg')
 print("\nCalculation")
 print(tabulate({
     "deviation": np.degrees(deviationAngle),
@@ -76,6 +77,23 @@ print(tabulate({
 print('\nRegression Data')
 print("B = ", B,"+/-", sdB)
 print("A = ", A,"+/-", sdA)
+
+#Calculating d from standard wavelengths
+sineThetas = np.sin(wavelengthData)
+test_d = colorsWavelength/np.mean(sineThetas, axis=1)
+gratings = 0.02254/test_d
+
+meanGratings = round(np.mean(gratings))
+errorGratings = round(np.std(gratings)/math.sqrt(len(gratings)))
+
+print("Analysis 1:")
+print(tabulate({
+    "Colors": colorsData,
+    "True Wavelengths": colorsWavelength,
+    "sin(theta)":np.mean(sineThetas, axis=1),
+    "Gratings": gratings
+}, headers='keys'))
+print("Grating:", meanGratings,"+/-", errorGratings)
 
 
 #Graphing
