@@ -75,16 +75,40 @@ _slope, _intercept = ODRrun.sd_beta
 xFit = np.linspace(np.log(T)[0], np.log(T)[len(T)-1], 1000)
 yFit = slope*xFit + intercept
 
+print('R_G: ', R_G, '+/-',_R_G)
+print('R_0:', R_0, '+/-', _R_0)
+
+print('\nPower: (Should be close to 4 to prove Stefans law)')
 print(slope, '+/-', _slope)
 stephan_e = math.exp(intercept)
-_stephan_e = math.exp(_intercept)
+_P_stephan_e = math.exp(_intercept)#note this is not +/- value, it's a product!
 
-print(stephan_e/(0.25e-6)/0.950)
+_stephan_e = min(abs(stephan_e-math.exp(slope-intercept)), abs(stephan_e-math.exp(slope+intercept)))
+
+
+print("\nConstant of proportioanlity: Includes sigma*e*Area ")
+print(stephan_e, '+/-', _stephan_e)
 
 plt.errorbar(np.log(T), np.log(P), xerr=xerr, yerr=yerr, linestyle='', capsize=2)
 plt.scatter(np.log(T), np.log(P))
-
+plt.title(r'$ln(P)\text{ vs }ln(T)$')
+plt.xlabel(r'$\text{ln(T)}$')
+plt.ylabel(r'$\text{ln(P)}$')
 plt.plot(xFit, yFit)
 
 # plt.errorbar(T,P, xerr=_T, yerr=_P, linestyle='')
+plt.show()
+
+
+plt.clf()
+plt.errorbar((T), (P), xerr=_T, yerr=_P, linestyle='', capsize=2)
+plt.scatter(T, P)
+
+xFit = np.linspace(T[0], T[len(T)-1], 1000)
+yFit = stephan_e*np.power(xFit,  slope)
+
+plt.plot(xFit, yFit)
+plt.title(r'$\text{P vs T}$')
+plt.xlabel(r'$\text{Temperature T (in K)}$')
+plt.ylabel(r'$\text{Power P (in watts)}$')
 plt.show()
