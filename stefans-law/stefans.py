@@ -33,8 +33,6 @@ DATA = np.array([
     [3.77, 0.22, 28.1]
     
 ])
-#Converts to kelvin
-DATA[:,2] = DATA[:,2] + 273
 
 
 alpha = 5.21e-3
@@ -55,8 +53,7 @@ _R  = R*np.sqrt(np.power(_V/DATA[:,0],2)+np.power(_I/DATA[:,1],2))
 
 delta = np.sqrt(alpha**2 - 4*beta*(1-R/R_0))
 T = (-1*alpha + delta)/(2*beta)
-_T = np.sqrt(np.power((1/4/beta/(delta)*(4*beta/R_0))*_R,2) + np.power((1/4/beta/(delta)*(-4*beta*R/(R_0**2)))*_R_0,2))
-# _T =abs((1/4/beta/delta*(4*beta/R_0))*_R) + abs((1/4/beta/delta*(-4*beta*R/(R_0**2)))*_R_0)
+_T = abs((1/4/beta/(delta)*(4*beta/R_0))*_R)
 
 
 P = DATA[:, 0]*DATA[:,1]
@@ -81,10 +78,8 @@ print('R_0:', R_0, '+/-', _R_0)
 print('\nPower: (Should be close to 4 to prove Stefans law)')
 print(slope, '+/-', _slope)
 stephan_e = math.exp(intercept)
-_P_stephan_e = math.exp(_intercept)#note this is not +/- value, it's a product!
 
-_stephan_e = min(abs(stephan_e-math.exp(slope-intercept)), abs(stephan_e-math.exp(slope+intercept)))
-
+_stephan_e = max(abs(stephan_e-math.exp(intercept-_intercept)), abs(stephan_e-math.exp(intercept+_intercept)))
 
 print("\nConstant of proportioanlity: Includes sigma*e*Area ")
 print(stephan_e, '+/-', _stephan_e)
